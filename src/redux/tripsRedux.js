@@ -11,11 +11,28 @@ export const getFilteredTrips = ({ trips, filters }) => {
     output = output.filter(trip => pattern.test(trip.name));
   }
 
-  // TODO - filter by duration
+  // DONE - filter by duration
+  if (filters.duration) {
+    output = output.filter(trip => trip.days >= filters.duration.from && trip.days <= filters.duration.to);
+  }
 
-  // TODO - filter by tags
+  // DONE - filter by tags
+  if (filters.tags) {
+    filters.tags.forEach(tag => {
+      output = output.filter(trip => trip.tags.find(tripTag => tripTag === tag));
+    });
+  }
 
-  // TODO - sort by cost descending (most expensive goes first)
+  // DONE - sort by cost descending (most expensive goes first)
+  const compareFunction = (x, y) => {
+    const costX = x.cost.replace('$', '');
+    const costY = y.cost.replace('$', '');
+
+    if (parseInt(costX) > parseInt(costY)) { return -1; }
+    { if (parseInt(costX) < parseInt(costY)) return 1; }
+    return 0;
+  };
+  output = output.sort(compareFunction);
 
   return output;
 };
@@ -59,3 +76,4 @@ export default function reducer(statePart = [], action = {}) {
   }
 }
  */
+
